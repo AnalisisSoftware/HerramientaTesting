@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 public class FramePrincipal extends JFrame {
 
@@ -119,16 +120,15 @@ public class FramePrincipal extends JFrame {
 		lblMetodos = new JLabel("Metodos:");
 		lblMetodos.setBounds(10, 23, 73, 14);
 		contentPane.add(lblMetodos);
-		
-		JTextArea textArea = new JTextArea();
-		textArea.setBounds(351, 178, -326, 100);
-		contentPane.add(textArea);
-		
+	    
 		taCodigo = new JTextArea();
-		taCodigo.setLineWrap(true);
 		taCodigo.setEditable(false);
-		taCodigo.setBounds(10, 196, 491, 254);
-		contentPane.add(taCodigo);
+		taCodigo.setLineWrap(true);
+		JScrollPane scrollCodigo = new JScrollPane(taCodigo);
+		scrollCodigo.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollCodigo.setBounds(10, 196, 491, 254);
+		
+		contentPane.add(scrollCodigo);
 	}
 	
 	private void abrirBuscadorCodigo() {
@@ -150,11 +150,12 @@ public class FramePrincipal extends JFrame {
 					Matcher matcher = pattern.matcher(linea);
 					if (matcher.find()) {
 					    lista.addElement(matcher.group(0));
-					    codigoMetodos.put(matcher.group(0), "{" + System.getProperty("line.separator"));
-					    codigo = "";
+					    codigoMetodos.put(matcher.group(0), "");
+					    codigo = "{" + System.getProperty("line.separator");
 					    flag = true;
 					} else if(flag) {
-						codigo += linea;
+						codigo += linea + System.getProperty("line.separator");
+						codigo.replaceAll("\t", "    ");
 						codigoMetodos.replace(lista.lastElement(), codigo);
 					}
 				}
